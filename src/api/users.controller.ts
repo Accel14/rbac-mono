@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@entities/user.entity';
+import { Roles } from './roles.decorator';
+import { Role } from '../enums/roles.enum';
 
 @Controller('api/users')
 export class UsersController {
@@ -10,6 +12,7 @@ export class UsersController {
     // async findAll(): Promise<User[]> {
     //     return this.usersService.findAll();
     // }
+    @Roles([Role.Admin])
     @Get()
     async findAll(): Promise<User[]> {
         return this.usersService.findAll();
@@ -20,9 +23,9 @@ export class UsersController {
         return "yeah";
     }
 
-    @Post(':id')
-    addOne(@Param('id') id: string) {
-        return this.usersService.addOne
-    }
+    // @Post(':id')
+    // addOne(@Param('id') id: string) {
+    //     return this.usersService.addOne
+    // }
 
 }
