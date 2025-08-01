@@ -9,12 +9,6 @@ import { RolesGuard } from './roles.guard';
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
-    // @Get()
-    // async findAll(): Promise<User[]> {
-    //     return this.usersService.findAll();
-    // }
-
-
     @Roles(Role.Admin)
     @UseGuards(RolesGuard)
     @Get()
@@ -26,11 +20,4 @@ export class UsersController {
     async findOne(@Param('id') id: string) {
         return "yeah";
     }
-
-
-    // @Post(':id')
-    // addOne(@Param('id') id: string) {
-    //     return this.usersService.addOne
-    // }
-
 }
