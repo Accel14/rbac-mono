@@ -9,7 +9,7 @@ export class User {
     @Column({ length: 500 })
     name: string;
 
-    @Column("varchar", { length: 320 })
+    @Column("varchar", { length: 320, unique: true })
     email: string;
 
     @Column("varchar")
