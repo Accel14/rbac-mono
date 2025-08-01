@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule, RouterModule],
   template: `
     <h2>Регистрация</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -57,12 +59,8 @@ export class RegisterComponent {
     });
   }
 
-
-
   successMessage = '';
   errorMessage = '';
-
-
 
   onSubmit() {
     if (this.registerForm.invalid) return;

@@ -1,10 +1,5 @@
-<h2>Регистрация</h2>
+<h2>Вход</h2>
 <form (ngSubmit)="onSubmit()" #form="ngForm">
-    <label>
-        Имя:
-        <input name="name" [(ngModel)]="formData.name" required />
-    </label>
-    <br />
     <label>
         Email:
         <input name="email" [(ngModel)]="formData.email" required />
@@ -15,8 +10,8 @@
         <input name="password" [(ngModel)]="formData.password" required type="password" />
     </label>
     <br />
-    <button type="submit">Зарегистрироваться</button>
-
+    <button type="submit">Войти</button>
+    <button [routerLink]="['/register']">Зарегистрироваться</button>
 </form>
 
 <p *ngIf="message">{{ message }}</p>
