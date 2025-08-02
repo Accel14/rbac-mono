@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService, CreateUserDto } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -51,7 +52,7 @@ import { RouterModule } from '@angular/router';
 export class RegisterComponent {
   registerForm;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -65,10 +66,11 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.invalid) return;
 
-    const formValue = this.registerForm.value;
+    const formValue = this.registerForm.value as CreateUserDto;
 
-    this.http.post('http://localhost:3000/api/auth/register', formValue).subscribe({
-      next: (res) => {
+    this.authService.register(formValue).subscribe({
+      next: () => {
+        console.log(this);
         this.successMessage = 'Регистрация прошла успешно!';
         this.errorMessage = '';
         this.registerForm.reset();

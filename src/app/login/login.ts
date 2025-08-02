@@ -4,11 +4,13 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService, CreateUserDto } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   template: `
     <h2>Вход</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -43,7 +45,7 @@ import { FormsModule } from '@angular/forms';
 export class LoginComponent {
   loginForm;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -56,13 +58,17 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.invalid) return;
 
-    const formValue = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    this.http.post('http://localhost:3000/api/auth/login', formValue).subscribe({
+    this.authService.login(email!, password!).subscribe({
       next: (res) => {
+        console.log(this);
+        this.authService.saveToken(res.access_token);
         this.successMessage = 'Вход прошел успешно!';
         this.errorMessage = '';
         this.loginForm.reset();
+        this.router.navigate(['/profile'])
+
       },
       error: (err) => {
         this.errorMessage = 'Ошибка входа: ' + (err.error?.message || err.statusText);

@@ -17,4 +17,35 @@ export class AuthService {
     register(user: CreateUserDto): Observable<any> {
         return this.http.post(`${this.apiUrl}/register`, user);
     }
+
+    login(email: string, password: string) {
+        return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password });
+    }
+
+    logout() {
+        localStorage.removeItem('access_token');
+    }
+
+    saveToken(token: string) {
+        localStorage.setItem('access_token', token);
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('access_token');
+    }
+
+    getUserIdFromToken(): number | null {
+        const token = localStorage.getItem('access_token');
+        if (!token) return null;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.sub ?? null;
+        } catch (error) {
+            console.error('Ошибка при парсинге токена:', error);
+            return null;
+        }
+    }
+
+
 }
