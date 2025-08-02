@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { RegisterComponent } from './register/register';
 import { LoginComponent } from './login/login';
 import { Profile } from './profile/profile';
+import { UsersListComponent } from './users-list/users-list';
 
 export const appRoutes: Routes = [
     {
@@ -20,5 +21,13 @@ export const appRoutes: Routes = [
     {
         path: 'register',
         component: RegisterComponent
+    },
+    {
+        path: 'users',
+        component: UsersListComponent
+    },
+    {
+        path: 'users/:id',
+        component: Profile
     }
 ];

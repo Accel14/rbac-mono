@@ -1,0 +1,1 @@
+export const BACKEND_API: string = "http://localhost:3000";

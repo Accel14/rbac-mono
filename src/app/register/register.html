@@ -1,22 +1,36 @@
 <h2>Регистрация</h2>
-<form (ngSubmit)="onSubmit()" #form="ngForm">
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
     <label>
         Имя:
-        <input name="name" [(ngModel)]="formData.name" required />
+        <input type="text" formControlName="name" />
     </label>
-    <br />
+    <div *ngIf="registerForm.controls['name'].invalid && registerForm.controls['name'].touched">
+        Имя обязательно
+    </div>
+
     <label>
         Email:
-        <input name="email" [(ngModel)]="formData.email" required />
+        <input type="email" formControlName="email" />
     </label>
-    <br />
+    <div *ngIf="registerForm.controls['email'].invalid && registerForm.controls['email'].touched">
+        Введите корректный email
+    </div>
+
     <label>
         Пароль:
-        <input name="password" [(ngModel)]="formData.password" required type="password" />
+        <input type="password" formControlName="password" />
     </label>
-    <br />
-    <button type="submit">Зарегистрироваться</button>
+    <div *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+        Пароль обязателен
+    </div>
 
+    <button type="submit" [disabled]="registerForm.invalid">Зарегистрироваться</button>
 </form>
 
-<p *ngIf="message">{{ message }}</p>
+<div *ngIf="successMessage" style="color: green;">
+    {{ successMessage }}
+</div>
+<div *ngIf="errorMessage" style="color: red;">
+    {{ errorMessage }}
+</div>

@@ -5,54 +5,24 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService, CreateUserDto } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule, RouterModule],
-  template: `
-    <h2>Регистрация</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
-      <label>
-        Имя:
-        <input type="text" formControlName="name" />
-      </label>
-      <div *ngIf="registerForm.controls['name'].invalid && registerForm.controls['name'].touched">
-        Имя обязательно
-      </div>
-
-      <label>
-        Email:
-        <input type="email" formControlName="email" />
-      </label>
-      <div *ngIf="registerForm.controls['email'].invalid && registerForm.controls['email'].touched">
-        Введите корректный email
-      </div>
-
-      <label>
-        Пароль:
-        <input type="password" formControlName="password" />
-      </label>
-      <div *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
-        Пароль обязателен
-      </div>
-
-      <button type="submit" [disabled]="registerForm.invalid">Зарегистрироваться</button>
-    </form>
-
-    <div *ngIf="successMessage" style="color: green;">
-      {{ successMessage }}
-    </div>
-    <div *ngIf="errorMessage" style="color: red;">
-      {{ errorMessage }}
-    </div>
-  `,
+  templateUrl: './register.html',
 })
 export class RegisterComponent {
   registerForm;
+  message: string = '';
+  formData = {
+    name: '',
+    email: '',
+    password: ''
+  };
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -74,6 +44,18 @@ export class RegisterComponent {
         this.successMessage = 'Регистрация прошла успешно!';
         this.errorMessage = '';
         this.registerForm.reset();
+
+        // Переадресация на профиль после успешной регистрации
+        this.authService.login(formValue.email, formValue.password).subscribe({
+          next: (res) => {
+            this.authService.saveToken(res.access_token);
+            this.router.navigate(['/profile']);
+          },
+          error: (err) => {
+            this.errorMessage = 'Ошибка входа после регистрации: ' + (err.error?.message || err.statusText);
+          }
+        });
+
       },
       error: (err) => {
         this.errorMessage = 'Ошибка регистрации: ' + (err.error?.message || err.statusText);

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { BACKEND_API } from '../constants';
 
 export interface CreateUserDto {
     name: string;
@@ -10,7 +11,7 @@ export interface CreateUserDto {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private readonly apiUrl = 'http://localhost:3000/api/auth';
+    private readonly apiUrl = `${BACKEND_API}/api/auth`;
 
     constructor(private http: HttpClient) { }
 
@@ -22,7 +23,7 @@ export class AuthService {
         return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password });
     }
 
-    logout() {
+    logout(): void {
         localStorage.removeItem('access_token');
     }
 
@@ -46,6 +47,7 @@ export class AuthService {
             return null;
         }
     }
+
 
 
 }
