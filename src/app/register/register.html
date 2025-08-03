@@ -31,6 +31,12 @@
     </div>
     }
 
+    <br>
+    <label>Роль:</label><br />
+    <input type="radio" formControlName="role" value="user" /> User<br />
+    <input type="radio" formControlName="role" value="manager" /> Manager<br />
+    <input type="radio" formControlName="role" value="admin" /> Admin<br />
+
     <button type="submit" [disabled]="registerForm.invalid">Зарегистрироваться</button>
 </form>
 

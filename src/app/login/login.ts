@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
@@ -78,7 +77,6 @@ export class LoginComponent {
         this.successMessage = 'Вход прошел успешно!';
         this.loginForm.reset();
         this.router.navigate(['/users', this.authService.getFromToken('sub')])
-
       },
       error: (err) => {
         this.errorMessage = 'Ошибка входа: ' + (err.error?.message || err.statusText);

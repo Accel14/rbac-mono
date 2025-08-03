@@ -17,7 +17,8 @@ export class RegisterComponent {
   formData = {
     name: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'user'
   };
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
@@ -25,6 +26,7 @@ export class RegisterComponent {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
+      role: ['user', Validators.required],
     });
   }
 

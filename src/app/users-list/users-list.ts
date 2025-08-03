@@ -8,20 +8,6 @@ import { User, UsersService } from '../services/user.service';
   selector: 'app-users-list',
   standalone: true,
   imports: [CommonModule],
-  // template: `
-  //   <h2>Все пользователи</h2>
-  //   <div *ngIf="users; else loading">
-  //     <ul>
-  //       <li *ngFor="let user of users">
-  //         <button (click)="viewProfile(user.id)">Просмотреть профиль</button>
-  //         ID: {{ user.id }}, Email: {{ user.email }}, Роль: {{ user.role }}
-  //       </li>
-  //     </ul>
-  //   </div>
-  //   <ng-template #loading>
-  //     <p>Загрузка...</p>
-  //   </ng-template>
-  // `
   template: `
     <h2>Все пользователи</h2>
     @if (users) {

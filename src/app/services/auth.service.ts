@@ -2,11 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_API } from '../constants';
+import { map } from 'rxjs/operators';
+
+enum Role {
+    Admin = 'admin',
+    Manager = 'manager',
+    User = 'user',
+}
 
 export interface CreateUserDto {
     name: string;
     email: string;
     password: string;
+    role: Role;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -20,7 +28,7 @@ export class AuthService {
     }
 
     login(email: string, password: string) {
-        return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password });
+        return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password }, { withCredentials: true });
     }
 
     logout(): void {
@@ -46,5 +54,11 @@ export class AuthService {
             console.error('Ошибка при парсинге токена:', error);
             return null;
         }
+    }
+
+    refreshToken() {
+        return this.http.post<{ access_token: string }>(`${this.apiUrl}/refresh`, {}, { withCredentials: true }).pipe(
+            map(response => response.access_token)
+        );
     }
 }

@@ -1,17 +1,37 @@
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { catchError, switchMap, throwError } from 'rxjs';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwt = localStorage.getItem('access_token');
-  console.log('JwtInterceptor intercept:', jwt);
-  if (jwt) {
-    req = req.clone({
+  const authService = inject(AuthService);
+  const token = localStorage.getItem('access_token');
+
+  let authReq = req;
+  if (token) {
+    authReq = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${token}`
       }
     });
   }
-  return next(req);
+
+  return next(authReq).pipe(
+    catchError(err => {
+      if (err.status === 401) {
+        return authService.refreshToken().pipe(
+          switchMap((newToken: string) => {
+            localStorage.setItem('access_token', newToken);
+            const newReq = req.clone({
+              setHeaders: {
+                Authorization: `Bearer ${newToken}`
+              }
+            });
+            return next(newReq);
+          })
+        );
+      }
+      return throwError(() => err);
+    })
+  );
 };
