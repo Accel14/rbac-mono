@@ -4,7 +4,6 @@ import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { BACKEND_API } from '../constants';
 import { UsersService } from '../services/user.service';
 
 @Component({
@@ -35,6 +34,7 @@ import { UsersService } from '../services/user.service';
   `,
   styleUrl: './profile.css'
 })
+
 export class Profile implements OnInit {
   user: any = null;
 
@@ -46,7 +46,6 @@ export class Profile implements OnInit {
 
   ngOnInit() {
     const id = this.authService.getUserIdFromToken();
-    console.log(id);
     if (!id) return;
 
     this.usersService.getUserById(id).subscribe({
@@ -54,18 +53,5 @@ export class Profile implements OnInit {
       error: (err) => console.error('Ошибка загрузки профиля', err),
       complete: () => console.log('Запрос завершен'),
     });
-
-    // this.http.get(`${BACKEND_API}/api/users/${id}`).subscribe({
-    //   next: (data) => {
-    //     console.log('Данные пользователя:', data);
-    //     this.user = data;
-    //   },
-    //   error: (err) => console.error('Ошибка загрузки профиля', err),
-    //   complete: () => {
-    //     console.log('Запрос завершён');
-    //   }
-    // });
-
   }
-
 }

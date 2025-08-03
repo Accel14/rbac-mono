@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { RegisterComponent } from './register/register';
 import { LoginComponent } from './login/login';
 import { Profile } from './profile/profile';
-import { UsersListComponent } from './users-list/users-list';
+import { UsersList } from './users-list/users-list';
 
 export const appRoutes: Routes = [
     {
@@ -24,7 +24,7 @@ export const appRoutes: Routes = [
     },
     {
         path: 'users',
-        component: UsersListComponent
+        component: UsersList
     },
     {
         path: 'users/:id',

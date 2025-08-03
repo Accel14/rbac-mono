@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BACKEND_API } from '../constants';
+import { Observable } from 'rxjs';
 
 export interface User {
     id: number;
@@ -17,6 +18,10 @@ export class UsersService {
 
     getUserById(id: number) {
         return this.http.get<User>(`${this.apiUrl}/${id}`);
+    }
+
+    getUsers(): Observable<any[]> {
+        return this.http.get<any[]>(this.apiUrl);
     }
 
 }

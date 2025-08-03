@@ -5,32 +5,43 @@
         Имя:
         <input type="text" formControlName="name" />
     </label>
-    <div *ngIf="registerForm.controls['name'].invalid && registerForm.controls['name'].touched">
+    @if (registerForm.controls['name'].invalid && registerForm.controls['name'].touched) {
+    <div>
         Имя обязательно
     </div>
+    }
 
     <label>
         Email:
         <input type="email" formControlName="email" />
     </label>
-    <div *ngIf="registerForm.controls['email'].invalid && registerForm.controls['email'].touched">
+    @if (registerForm.controls['email'].invalid && registerForm.controls['email'].touched) {
+    <div>
         Введите корректный email
     </div>
+    }
 
     <label>
         Пароль:
         <input type="password" formControlName="password" />
     </label>
-    <div *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+    @if (registerForm.controls['password'].invalid && registerForm.controls['password'].touched) {
+    <div>
         Пароль обязателен
     </div>
+    }
 
     <button type="submit" [disabled]="registerForm.invalid">Зарегистрироваться</button>
 </form>
 
-<div *ngIf="successMessage" style="color: green;">
+@if (successMessage) {
+<div style="color: green;">
     {{ successMessage }}
 </div>
-<div *ngIf="errorMessage" style="color: red;">
+}
+
+@if (errorMessage) {
+<div style="color: red;">
     {{ errorMessage }}
 </div>
+}

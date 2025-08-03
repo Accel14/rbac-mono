@@ -45,7 +45,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginForm;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -65,14 +65,12 @@ export class LoginComponent {
         console.log(this);
         this.authService.saveToken(res.access_token);
         this.successMessage = 'Вход прошел успешно!';
-        this.errorMessage = '';
         this.loginForm.reset();
         this.router.navigate(['/profile'])
 
       },
       error: (err) => {
         this.errorMessage = 'Ошибка входа: ' + (err.error?.message || err.statusText);
-        this.successMessage = '';
       },
     });
   }
