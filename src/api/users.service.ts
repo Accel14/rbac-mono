@@ -1,11 +1,10 @@
+import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
-import { NotFoundError } from 'rxjs';
 import { DeepPartial } from 'typeorm';
 
 
@@ -39,6 +38,7 @@ export class UsersService {
             name: data.name,
             email: data.email,
             passwordHash: hashedPassword,
+            role: data.role,
         });
 
         try {
@@ -67,5 +67,4 @@ export class UsersService {
     async remove(id: number): Promise<void> {
         await this.usersRepository.delete(id);
     }
-
 }

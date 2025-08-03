@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, UseGuards, Delete, Put, Request, Body, ForbiddenException, Req } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Delete, Put, Request, Body, ForbiddenException, Req, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@entities/user.entity';
 import { Roles } from './roles.decorator';
@@ -6,10 +6,17 @@ import { Role } from '../enums/roles.enum';
 import { RolesGuard } from './roles.guard';
 import { AuthGuard } from './auth/auth.guard';
 import { UpdateUserDto } from './update-user.dto';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiForbiddenResponse, ApiNoContentResponse } from '@nestjs/swagger';
 
+@ApiTags('users')
+@ApiBearerAuth('access-token') // Отмечает, что методы требуют JWT авторизацию
 @Controller('api/users')
 export class UsersController {
     constructor(private usersService: UsersService) { }
+
+    @ApiOperation({ summary: 'Получить всех пользователей' })
+    @ApiResponse({ status: 200, description: 'Пользователи найдены' })
+    @ApiForbiddenResponse({ description: 'Доступ запрещён' })
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -18,6 +25,12 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+
+
+    @ApiOperation({ summary: 'Получить пользователя по ID' })
+    @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
+    @ApiResponse({ status: 200, description: 'Пользователь найден' })
+    @ApiForbiddenResponse({ description: 'Доступ запрещён' })
 
     @UseGuards(AuthGuard)
     @Get(':id')
@@ -33,32 +46,35 @@ export class UsersController {
         }
     }
 
-    @UseGuards(AuthGuard)
+    @ApiOperation({ summary: 'Обновить пользователя по ID' })
+    @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
+    @ApiBody({ type: UpdateUserDto })
+    @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
+    @ApiForbiddenResponse({ description: 'Доступ запрещён' })
+
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Admin, Role.Manager)
     @Put(':id')
     async update(@Param('id') id: number, @Request() req, @Body() updateUserDto: UpdateUserDto) {
-        const currentUser = req.user;
-        const targetId = Number(id);
-        const isAdmin = currentUser.role === 'admin';
-        const isSelf = currentUser.sub === targetId;
-
-        if (!isAdmin && !isSelf) {
-            throw new ForbiddenException('Доступ запрещён');
-        }
-
-        return this.usersService.update(targetId, updateUserDto);
+        return this.usersService.update(id, updateUserDto);
     }
 
+
+    @ApiOperation({ summary: 'Удалить пользователя по ID' })
+    @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
+    @ApiNoContentResponse({ description: 'Пользователь успешно удалён' })
+    @ApiForbiddenResponse({ description: 'Доступ запрещён' })
+
+    @HttpCode(204)
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)
     @Delete(':id')
     async deleteOne(@Param('id') idParam: number, @Request() req) {
         const id = Number(idParam);
         const requestingUserId = Number(req.user.sub);
-
         if (requestingUserId === id) {
             throw new ForbiddenException('Администратор не может удалить самого себя.');
         }
-
-        return this.usersService.remove(id);
+        return;
     }
 }
