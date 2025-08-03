@@ -35,13 +35,13 @@ export class AuthService {
         return localStorage.getItem('access_token');
     }
 
-    getUserIdFromToken(): number | null {
+    getFromToken(attribute: string): number | null {
         const token = localStorage.getItem('access_token');
         if (!token) return null;
 
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload.sub ?? null;
+            return payload[attribute] ?? null;
         } catch (error) {
             console.error('Ошибка при парсинге токена:', error);
             return null;

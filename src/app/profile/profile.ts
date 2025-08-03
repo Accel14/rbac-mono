@@ -1,9 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../services/user.service';
 
 @Component({
@@ -27,31 +26,71 @@ import { UsersService } from '../services/user.service';
     <p>Загрузка данных...</p>
     }
 
-  @if (user.role === 'admin') {
-  <a routerLink="/users">Список всех пользователей</a>
+  @if (currentRole === 'admin') {
+    <a routerLink="/users">Список всех пользователей</a>
+    @if (currentId !== user.id) {
+      <button (click)="deleteUser(user.id)">Удалить пользователя</button>
+    }
   }
   
   `,
-  styleUrl: './profile.css'
+  styleUrls: ['./profile.css']
 })
 
 export class Profile implements OnInit {
   user: any = null;
+  currentId: number | null = 0;
+  currentRole: any = null;
 
   constructor(
-    private http: HttpClient,
     private authService: AuthService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit() {
-    const id = this.authService.getUserIdFromToken();
-    if (!id) return;
 
-    this.usersService.getUserById(id).subscribe({
-      next: (data) => this.user = data,
+    const routeId = this.route.snapshot.paramMap.get('id');
+    const subFromToken = this.authService.getFromToken('sub');
+    const roleFromToken = this.authService.getFromToken('role');
+    console.log(`routeId: ${routeId}, subFromToken: ${subFromToken}, roleFromToken: ${roleFromToken}`);
+
+    if (subFromToken === null) {
+      console.error('Пользователь не авторизован');
+      return;
+    }
+
+    this.currentId = subFromToken;
+    this.currentRole = roleFromToken;
+
+    const targetId = routeId ? Number(routeId) : this.currentId;
+
+    this.usersService.getUserById(targetId).subscribe({
+      next: (data) => {
+        console.log('Данные пользователя:', data);
+        this.user = data;
+      },
       error: (err) => console.error('Ошибка загрузки профиля', err),
       complete: () => console.log('Запрос завершен'),
     });
+
+  }
+
+  deleteUser(id: number) {
+    if (!confirm("Уверены?")) return;
+
+
+    this.usersService.deleteUser(id).subscribe({
+      next: () => {
+        console.log("Пользователь удалён");
+        this.router.navigate(['/users']);
+      },
+      error: (err) => {
+        console.error('Ошибка удаления', err);
+        alert('Не удалось удалить пользователя');
+      }
+    });
+
   }
 }

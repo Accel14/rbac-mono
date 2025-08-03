@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService, CreateUserDto } from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 
@@ -18,26 +17,38 @@ import { Router } from '@angular/router';
         Email:
         <input type="email" formControlName="email" />
       </label>
-      <div *ngIf="loginForm.controls['email'].invalid && loginForm.controls['email'].touched">
+      @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched) {
+      <div>
         Введите корректный email
       </div>
+      }
+      
 
       <label>
         Пароль:
         <input type="password" formControlName="password" />
       </label>
-      <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
+      @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched) {
+      <div>
+        Введите корректный пароль
       </div>
+      }
+      
 
       <button type="submit" [disabled]="loginForm.invalid">Войти</button>
     </form>
 
-    <div *ngIf="successMessage" style="color: green;">
+    @if (successMessage) {
+    <div style="color: green;">
       {{ successMessage }}
     </div>
-    <div *ngIf="errorMessage" style="color: red;">
+    }
+    
+    @if (errorMessage) {
+    <div style="color: red;">
       {{ errorMessage }}
     </div>
+    }
     <a routerLink="/register">Зарегистрироваться</a>
   `,
   styleUrl: './login.css'
@@ -66,7 +77,7 @@ export class LoginComponent {
         this.authService.saveToken(res.access_token);
         this.successMessage = 'Вход прошел успешно!';
         this.loginForm.reset();
-        this.router.navigate(['/profile'])
+        this.router.navigate(['/users', this.authService.getFromToken('sub')])
 
       },
       error: (err) => {

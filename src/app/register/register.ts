@@ -50,7 +50,7 @@ export class RegisterComponent {
             this.router.navigate(['/profile']);
           },
           error: (err) => {
-            this.errorMessage = 'Ошибка входа после регистрации: ' + (err.error?.message || err.statusText);
+            this.errorMessage = 'Ошибка входа: ' + (err.error?.message || err.statusText);
           }
         });
 
