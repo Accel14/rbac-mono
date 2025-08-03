@@ -1,9 +1,13 @@
 import { User } from '../entities/user.entity';
-import { Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './create-user.dto';
+import { UpdateUserDto } from './update-user.dto';
+import { NotFoundError } from 'rxjs';
+import { DeepPartial } from 'typeorm';
+
 
 
 @Injectable()
@@ -46,6 +50,18 @@ export class UsersService {
             throw new InternalServerErrorException();
         }
 
+    }
+
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+        const partialUser: DeepPartial<User> = { ...updateUserDto };
+        await this.usersRepository.update({ id }, partialUser);
+        const user = await this.findOne(id);
+
+        if (!user) {
+            throw new NotFoundException(`Пользователь с id ${id} не найден`);
+        }
+
+        return user;
     }
 
     async remove(id: number): Promise<void> {
