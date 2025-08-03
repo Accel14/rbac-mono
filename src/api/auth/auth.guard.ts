@@ -25,6 +25,7 @@ export class AuthGuard implements CanActivate {
                     secret: this.configService.get<string>('JWT_SECRET'),
                 }
             );
+            console.log('Payload after verify:', payload);
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
             request['user'] = payload;
@@ -34,8 +35,12 @@ export class AuthGuard implements CanActivate {
         return true;
     }
 
-    private extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    private extractTokenFromHeader(request: any): string | undefined {
+        const authHeader = request.headers?.authorization || request.headers?.Authorization;
+        if (!authHeader) return undefined;
+        const [type, token] = authHeader.split(' ');
+        console.log(`type = ${type}`);
+        console.log(`token = ${token}`)
         return type === 'Bearer' ? token : undefined;
     }
 }

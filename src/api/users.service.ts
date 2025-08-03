@@ -1,5 +1,5 @@
 import { User } from '../entities/user.entity';
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from 'bcrypt';
@@ -36,7 +36,16 @@ export class UsersService {
             email: data.email,
             passwordHash: hashedPassword,
         });
-        return this.usersRepository.save(user);
+
+        try {
+            return await this.usersRepository.save(user);
+        } catch (error) {
+            if (error.code === '23505') {
+                throw new BadRequestException('Пользователь с таким email уже существует');
+            }
+            throw new InternalServerErrorException();
+        }
+
     }
 
     async remove(id: number): Promise<void> {
