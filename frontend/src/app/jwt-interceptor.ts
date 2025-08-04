@@ -18,7 +18,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError(err => {
-      if (err.status === 401) {
+      if (err.status === 401 && !isAuthEndpoint(req.url)) {
         return authService.refreshToken().pipe(
           switchMap((newToken: string) => {
             localStorage.setItem('access_token', newToken);
@@ -34,4 +34,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => err);
     })
   );
+
+  function isAuthEndpoint(url: string): boolean {
+    return url.includes('/auth/login') || url.includes('/auth/refresh');
+  }
 };

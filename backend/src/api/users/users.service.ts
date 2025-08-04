@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { User } from '../entities/user.entity';
+import { User } from '@entities/user.entity';
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";

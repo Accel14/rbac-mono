@@ -6,24 +6,31 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private configService: ConfigService) { }
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService,
+    ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const refreshToken = request.cookies?.refresh_token;
-        if (!refreshToken) throw new UnauthorizedException('Refresh Token missing');
+        const request = context.switchToHttp().getRequest<Request>();
+        const token = request.cookies?.['refresh_token'];
+
+        if (!token) {
+            throw new UnauthorizedException('Refresh token not found in cookies');
+        }
 
         try {
-            const payload = await this.jwtService.verifyAsync(refreshToken, {
+            const payload = await this.jwtService.verifyAsync(token, {
                 secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
             });
             request.user = payload;
             return true;
-        } catch {
-            throw new UnauthorizedException('Invalid refresh token');
+        } catch (err) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
         }
     }
 }

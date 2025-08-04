@@ -1,13 +1,23 @@
-import { Controller, Post, Body, UnauthorizedException, Req, Res } from '@nestjs/common';
-import { UsersService } from '../users.service';
+import { Controller, Post, Body, UnauthorizedException, Req, Res, UseGuards } from '@nestjs/common';
+import { UsersService } from '@users/users.service';
 import { User } from '@entities/user.entity';
-import { CreateUserDto } from '../create-user.dto';
+import { CreateUserDto } from '@users/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiCookieAuth } from '@nestjs/swagger';
+import { RefreshTokenGuard } from './refreshtoken.guard';
+
+interface RefreshRequest extends Request {
+    user: {
+        sub: number;
+        role?: string;
+        iat?: number;
+        exp?: number;
+    };
+}
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -64,25 +74,23 @@ export class AuthController {
     @ApiResponse({ status: 201, description: 'Возвращает новый access токен' })
     @ApiResponse({ status: 401, description: 'Некорректный или отсутствующий refresh токен' })
     @Post('refresh')
-    async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-        const token = req.cookies['refresh_token'];
-        if (!token) throw new UnauthorizedException();
-
-        try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.configService.getOrThrow('JWT_REFRESH_SECRET'),
-            });
-
-            const user = await this.usersService.findOne(payload.sub);
-            if (!user) throw new UnauthorizedException();
-
-            const newAccessToken = this.jwtService.sign(
-                { sub: user.id, role: user.role },
-                { expiresIn: '1h', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
-            );
-            return { access_token: newAccessToken };
-        } catch (err) {
-            throw new UnauthorizedException();
+    @UseGuards(RefreshTokenGuard)
+    async refresh(@Req() req: RefreshRequest) {
+        if (!req.user?.sub) {
+            throw new UnauthorizedException('Пользователь не определён');
         }
+        const user = await this.usersService.findOne(req.user.sub);
+
+        if (!user) throw new UnauthorizedException();
+
+        const accessToken = this.jwtService.sign(
+            { sub: user.id, role: user.role },
+            {
+                expiresIn: '1h',
+                secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+            }
+        );
+
+        return { access_token: accessToken };
     }
 }

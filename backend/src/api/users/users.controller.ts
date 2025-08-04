@@ -1,10 +1,10 @@
 import { Controller, Get, Param, UseGuards, Delete, Put, Request, Body, ForbiddenException, Req, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@entities/user.entity';
-import { Roles } from './roles.decorator';
-import { Role } from '../enums/roles.enum';
-import { RolesGuard } from './roles.guard';
-import { AuthGuard } from './auth/auth.guard';
+import { Roles } from '@roles/roles.decorator';
+import { Role } from '@enums/roles.enum';
+import { RolesGuard } from '@roles/roles.guard';
+import { AuthGuard } from '@auth/auth.guard';
 import { UpdateUserDto } from './update-user.dto';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiForbiddenResponse, ApiNoContentResponse } from '@nestjs/swagger';
 

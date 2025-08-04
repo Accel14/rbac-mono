@@ -23,7 +23,19 @@
       ],
       "@modules/*": [
         "src/modules/*"
-      ]
+      ],
+      "@enums/*": [
+        "src/enums/*"
+      ],
+      "@roles/*": [
+        "src/api/roles/*"
+      ],
+      "@auth/*": [
+        "src/api/auth/*"
+      ],
+      "@users/*": [
+        "src/api/users/*"
+      ],
     }
   }
 }
