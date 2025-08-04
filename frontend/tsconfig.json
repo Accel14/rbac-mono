@@ -30,5 +30,13 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
+  "paths": {
+    "@entities/*": [
+      "src/entities/*"
+    ],
+    "@modules/*": [
+      "src/modules/*"
+    ]
+  }
 }
