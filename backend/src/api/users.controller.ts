@@ -17,7 +17,6 @@ export class UsersController {
     @ApiOperation({ summary: 'Получить всех пользователей' })
     @ApiResponse({ status: 200, description: 'Пользователи найдены' })
     @ApiForbiddenResponse({ description: 'Доступ запрещён' })
-
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Get()
@@ -31,7 +30,6 @@ export class UsersController {
     @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
     @ApiResponse({ status: 200, description: 'Пользователь найден' })
     @ApiForbiddenResponse({ description: 'Доступ запрещён' })
-
     @UseGuards(AuthGuard)
     @Get(':id')
     async findOne(@Param('id') idParam: number, @Req() req) {
@@ -51,7 +49,6 @@ export class UsersController {
     @ApiBody({ type: UpdateUserDto })
     @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
     @ApiForbiddenResponse({ description: 'Доступ запрещён' })
-
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.Admin, Role.Manager)
     @Put(':id')
@@ -64,7 +61,6 @@ export class UsersController {
     @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
     @ApiNoContentResponse({ description: 'Пользователь успешно удалён' })
     @ApiForbiddenResponse({ description: 'Доступ запрещён' })
-
     @HttpCode(204)
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)
