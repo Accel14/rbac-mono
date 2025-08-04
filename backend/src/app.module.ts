@@ -6,7 +6,6 @@ import { UsersModule } from './api/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './api/auth/auth.module';
 import { User } from '@entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [

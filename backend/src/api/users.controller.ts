@@ -9,7 +9,7 @@ import { UpdateUserDto } from './update-user.dto';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiForbiddenResponse, ApiNoContentResponse } from '@nestjs/swagger';
 
 @ApiTags('users')
-@ApiBearerAuth('access-token') // Отмечает, что методы требуют JWT авторизацию
+@ApiBearerAuth('access-token')
 @Controller('api/users')
 export class UsersController {
     constructor(private usersService: UsersService) { }

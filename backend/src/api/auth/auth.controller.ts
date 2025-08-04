@@ -33,7 +33,7 @@ export class AuthController {
 
         const accessToken = this.jwtService.sign(
             { sub: user.id, role: user.role },
-            { expiresIn: '5m', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
+            { expiresIn: '1h', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
         );
         const refreshToken = this.jwtService.sign(
             { sub: user.id },
@@ -78,7 +78,7 @@ export class AuthController {
 
             const newAccessToken = this.jwtService.sign(
                 { sub: user.id, role: user.role },
-                { expiresIn: '5m', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
+                { expiresIn: '1h', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
             );
             return { access_token: newAccessToken };
         } catch (err) {
