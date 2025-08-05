@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../enums/roles.enum'
+import { Role } from '@enums/roles.enum'
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {

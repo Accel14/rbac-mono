@@ -1,11 +1,12 @@
 import * as bcrypt from 'bcrypt';
 import { User } from '@entities/user.entity';
-import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException, ForbiddenException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
 import { DeepPartial } from 'typeorm';
+import { Role } from '@enums/roles.enum';
 
 
 

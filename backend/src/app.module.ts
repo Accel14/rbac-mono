@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from '@users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './api/auth/auth.module';
@@ -24,12 +22,12 @@ import { User } from '@entities/user.entity';
         database: configService.get<string>('PGDATABASE'),
         entities: [User],
         synchronize: true,
+        logging: true,
+        logger: 'advanced-console',
       }),
     }),
     UsersModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule { }
