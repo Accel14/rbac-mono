@@ -42,15 +42,23 @@ export class UsersService {
             role: data.role,
         });
 
-        try {
-            return await this.usersRepository.save(user);
-        } catch (error) {
-            if (error.code === '23505') {
+        if (await this.findByEmail(user.email) !== null) {
                 throw new BadRequestException('Пользователь с таким email уже существует');
             }
-            throw new InternalServerErrorException();
+
+        const newUser = await this.usersRepository.insert(user);
+
+        if (!newUser) {
+            throw new InternalServerErrorException("Ошибка при получении созданного пользователя");
         }
 
+        const createdUser = await this.findById(newUser.identifiers[0].id);
+
+        if (!createdUser) {
+            throw new InternalServerErrorException('Ошибка при получении созданного пользователя');
+        }
+
+        return await createdUser;
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
@@ -67,5 +75,16 @@ export class UsersService {
 
     async remove(id: number): Promise<void> {
         await this.usersRepository.delete(id);
+    }
+
+    async getProfileByRequester(id: number, requester: { sub: number, role: Role }) {
+        const isSelf = requester.sub === id;
+        const isAdmin = requester.role === Role.Admin;
+
+        if (!isSelf && !isAdmin) {
+            throw new ForbiddenException('У вас недостаточно прав для доступа к этим данным');
+        }
+
+        return await this.findById(id);
     }
 }
