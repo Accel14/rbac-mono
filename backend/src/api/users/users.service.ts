@@ -43,8 +43,8 @@ export class UsersService {
         });
 
         if (await this.findByEmail(user.email) !== null) {
-                throw new BadRequestException('Пользователь с таким email уже существует');
-            }
+            throw new BadRequestException('Пользователь с таким email уже существует');
+        }
 
         const newUser = await this.usersRepository.insert(user);
 

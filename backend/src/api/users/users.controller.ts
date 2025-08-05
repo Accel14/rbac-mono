@@ -24,8 +24,6 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-
-
     @ApiOperation({ summary: 'Получить пользователя по ID' })
     @ApiParam({ name: 'id', type: Number, description: 'ID пользователя' })
     @ApiResponse({ status: 200, description: 'Пользователь найден' })
@@ -34,14 +32,8 @@ export class UsersController {
     @Get(':id')
     async findOne(@Param('id') idParam: number, @Req() req) {
         const id = Number(idParam);
-        const requestingUserId = Number(req.user.sub);
-        const requestingUserRole = req.user.role;
 
-        if (requestingUserRole === Role.Admin || requestingUserId === id) {
-            return await this.usersService.findOne(id);
-        } else {
-            throw new ForbiddenException('У вас недостаточно прав для доступа к этим данным');
-        }
+        return await this.usersService.getProfileByRequester(id, req.user);
     }
 
     @ApiOperation({ summary: 'Обновить пользователя по ID' })
