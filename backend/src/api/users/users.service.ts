@@ -21,7 +21,7 @@ export class UsersService {
         return this.usersRepository.find();
     }
 
-    findOne(id: number): Promise<User | null> {
+    findById(id: number): Promise<User | null> {
         return this.usersRepository.findOneBy({ id });
     }
 
@@ -56,7 +56,7 @@ export class UsersService {
     async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
         const partialUser: DeepPartial<User> = { ...updateUserDto };
         await this.usersRepository.update({ id }, partialUser);
-        const user = await this.findOne(id);
+        const user = await this.findById(id);
 
         if (!user) {
             throw new NotFoundException(`Пользователь с id ${id} не найден`);

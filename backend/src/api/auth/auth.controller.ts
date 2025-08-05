@@ -79,7 +79,7 @@ export class AuthController {
         if (!req.user?.sub) {
             throw new UnauthorizedException('Пользователь не определён');
         }
-        const user = await this.usersService.findOne(req.user.sub);
+        const user = await this.usersService.findById(req.user.sub);
 
         if (!user) throw new UnauthorizedException();
 
