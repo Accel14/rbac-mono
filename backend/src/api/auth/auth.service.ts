@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersService } from '@users/users.service';
+import { LoginDto } from './login.dto';
+import { Response, Request, CookieOptions } from 'express';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +12,7 @@ export class AuthService {
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService,
+        private configService: ConfigService,
     ) { }
 
     async validateUser(email: string, pass: string): Promise<any> {
@@ -21,17 +25,37 @@ export class AuthService {
         return null;
     }
 
-    async login(user: any) {
-        console.log('User at login:', user);
-        const payload = { sub: user.id, role: user.role };
+    async login(loginDto: LoginDto): Promise<{
+        accessToken: string,
+        refreshTokenCookie: { value: string, options: CookieOptions }
+    }> {
 
+        const user = await this.validateUser(loginDto.email, loginDto.password);
+        if (!user) throw new UnauthorizedException('Неверные учётные данные');
 
-        const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
-        const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+        const accessToken = this.jwtService.sign(
+            { sub: user.id, role: user.role },
+            { expiresIn: '1h', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
+        );
+        const refreshToken = this.jwtService.sign(
+            { sub: user.id },
+            { expiresIn: '7d', secret: this.configService.get<string>('JWT_REFRESH_SECRET') }
+        );
+
+        const cookieOptions: CookieOptions = {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        }
 
         return {
-            access_token: accessToken,
-            refresh_token: refreshToken,
+            accessToken,
+            refreshTokenCookie: {
+                value: refreshToken,
+                options: cookieOptions
+            }
         };
     }
 }

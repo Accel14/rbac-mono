@@ -38,27 +38,11 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @Body() loginDto: LoginDto,
     ) {
-        const user = await this.authService.validateUser(loginDto.email, loginDto.password);
-        if (!user) throw new UnauthorizedException('Неверные учётные данные');
+        const result = await this.authService.login(loginDto);
 
-        const accessToken = this.jwtService.sign(
-            { sub: user.id, role: user.role },
-            { expiresIn: '1h', secret: this.configService.get<string>('JWT_ACCESS_SECRET') }
-        );
-        const refreshToken = this.jwtService.sign(
-            { sub: user.id },
-            { expiresIn: '7d', secret: this.configService.get<string>('JWT_REFRESH_SECRET') }
-        );
+        res.cookie('refresh_token', result.refreshTokenCookie.value, result.refreshTokenCookie.options);
 
-        res.cookie('refresh_token', refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        return { access_token: accessToken };
+        return { access_token: result.accessToken };
     }
 
     @ApiOperation({ summary: 'Регистрация нового пользователя' })
