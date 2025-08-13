@@ -84,6 +84,14 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@users/(.*)$": "<rootDir>/api/users/$1",
+      "^@entities/(.*)$": "<rootDir>/entities/$1",
+      "^@enums/(.*)$": "<rootDir>/enums/$1",
+      "^@modules/(.*)$": "<rootDir>/api/modules/$1",
+      "^@roles/(.*)$": "<rootDir>/api/roles/$1",
+      "^@auth/(.*)$": "<rootDir>/api/auth/$1"
+    }
   }
 }
