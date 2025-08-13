@@ -40,7 +40,6 @@ export class RegisterComponent {
 
     this.authService.register(formValue).subscribe({
       next: () => {
-        console.log(this);
         this.successMessage = 'Регистрация прошла успешно!';
         this.errorMessage = '';
         this.registerForm.reset();

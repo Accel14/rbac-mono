@@ -72,7 +72,6 @@ export class Login {
 
     this.authService.login(email!, password!).subscribe({
       next: (res) => {
-        console.log(this);
         this.authService.saveToken(res.access_token);
         this.successMessage = 'Вход прошел успешно!';
         this.loginForm.reset();

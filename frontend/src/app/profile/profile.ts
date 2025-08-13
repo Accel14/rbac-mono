@@ -91,7 +91,6 @@ export class Profile implements OnInit {
     const routeId = this.route.snapshot.paramMap.get('id');
     const subFromToken = this.authService.getFromToken('sub');
     const roleFromToken = this.authService.getFromToken('role');
-    console.log(`routeId: ${routeId}, subFromToken: ${subFromToken}, roleFromToken: ${roleFromToken}`);
 
     if (!subFromToken) return;
 
