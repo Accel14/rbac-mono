@@ -52,7 +52,7 @@ import { Router } from '@angular/router';
   `,
   styleUrl: './login.css'
 })
-export class LoginComponent {
+export class Login {
   loginForm;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {

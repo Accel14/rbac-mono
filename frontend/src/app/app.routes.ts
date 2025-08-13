@@ -12,7 +12,7 @@ export const appRoutes: Routes = [
     },
     {
         path: 'login',
-        component: LoginComponent
+        component: Login
     },
     {
         path: 'profile',
