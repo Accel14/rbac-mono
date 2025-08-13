@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "moduleResolution": "node",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -13,7 +14,16 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": "src",
+    "paths": {
+      "@entities/*": [
+        "src/entities/*"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -31,12 +41,4 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  "paths": {
-    "@entities/*": [
-      "src/entities/*"
-    ],
-    "@modules/*": [
-      "src/modules/*"
-    ]
-  }
 }
