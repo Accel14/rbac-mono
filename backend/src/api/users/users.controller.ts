@@ -63,6 +63,6 @@ export class UsersController {
         if (requestingUserId === id) {
             throw new ForbiddenException('Администратор не может удалить самого себя.');
         }
-        return;
+        return this.usersService.remove(id);
     }
 }
