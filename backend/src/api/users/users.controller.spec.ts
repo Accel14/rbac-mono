@@ -5,16 +5,12 @@ import { User } from "@entities/user.entity";
 import { ObjectLiteral, Repository } from "typeorm";
 import { Role } from "@enums/roles.enum";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
-import { ModuleMocker, MockMetadata } from "jest-mock";
+import { ModuleMocker } from "jest-mock";
 
 const moduleMocker = new ModuleMocker(global);
 
 describe('UsersController', () => {
     let usersController: UsersController;
-
-    type MockRepository<T extends ObjectLiteral = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
     const mockUsers: User[] = [{
         id: 1,
@@ -54,43 +50,5 @@ describe('UsersController', () => {
             expect(result).toEqual(mockUsers);
         })
     })
-
-
-
-    // beforeEach(async () => {
-    //     const mockUserRepository = {
-    //         find: jest.fn(),
-    //         findOne: jest.fn(),
-    //         save: jest.fn(),
-    //     };
-    //     const moduleRef = await Test.createTestingModule({
-    //         controllers: [UsersController],
-    //         providers: [
-    //             UsersService,
-    //             {
-    //                 provide: getRepositoryToken(User),
-    //                 useValue: mockUserRepository,
-    //             },
-    //             {
-    //                 provide: JwtService,
-    //                 useValue: {
-    //                     sign: jest.fn(),
-    //                     verify: jest.fn(),
-    //                 },
-    //             },
-    //             {
-    //                 provide: ConfigService,
-    //                 useValue: {
-    //                     get: jest.fn(),
-    //                 },
-    //             },
-    //         ],
-    //     }).compile();
-
-    //     userRepository = moduleRef.get<MockRepository<User>>(getRepositoryToken(User));
-    //     usersService = moduleRef.get(UsersService);
-    //     usersController = moduleRef.get(UsersController);
-    // });
-
 
 })
