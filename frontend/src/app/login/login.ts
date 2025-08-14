@@ -5,39 +5,58 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    MatSlideToggleModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule
+  ],
   template: `
     <h2>Вход</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <label>
-        Email:
-        <input type="email" formControlName="email" />
-      </label>
-      @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched) {
-      <div>
-        Введите корректный email
-      </div>
-      }
-      
+      <div class="row">
 
-      <label>
-        Пароль:
-        <input type="password" formControlName="password" />
-      </label>
-      @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched) {
-      <div>
-        Введите корректный пароль
-      </div>
-      }
-      
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Email" formControlName="email">
+            @if (loginForm.controls['email'].hasError('required')) {
+              <mat-error>First name is <strong>required</strong></mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-      <button type="submit" [disabled]="loginForm.invalid">Войти</button>
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Password" formControlName="password">
+            @if (loginForm.controls['password'].hasError('required')) {
+              <mat-error>Password is <strong>required</strong></mat-error>
+            }
+          </mat-form-field>
+        </div>
+        
+      </div>
+
+      <button matButton="filled" type="submit" [disabled]="loginForm.invalid">Войти</button>
+
+      <button matButton="filled" routerLink="/register">Зарегистрироваться</button>
     </form>
 
-    @if (successMessage) {
+      @if (successMessage) {
     <div style="color: green;">
       {{ successMessage }}
     </div>
@@ -48,7 +67,6 @@ import { Router } from '@angular/router';
       {{ errorMessage }}
     </div>
     }
-    <a routerLink="/register">Зарегистрироваться</a>
   `,
   styleUrl: './login.css'
 })
