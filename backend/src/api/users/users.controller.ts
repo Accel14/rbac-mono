@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards, Delete, Put, Request, Body, ForbiddenException, Req, HttpCode } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Delete, Put, Request, Body, ForbiddenException, Req, HttpCode, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@entities/user.entity';
 import { Roles } from '@roles/roles.decorator';
@@ -30,9 +30,7 @@ export class UsersController {
     @ApiForbiddenResponse({ description: 'Доступ запрещён' })
     @UseGuards(AuthGuard)
     @Get(':id')
-    async findOne(@Param('id') idParam: number, @Req() req) {
-        const id = Number(idParam);
-
+    async findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
         return await this.usersService.getProfileByRequester(id, req.user);
     }
 
