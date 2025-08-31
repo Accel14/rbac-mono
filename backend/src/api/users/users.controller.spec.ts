@@ -26,7 +26,10 @@ describe('UsersController', () => {
         })
             .useMocker((token) => {
                 if (token === UsersService) {
-                    return { findAll: jest.fn().mockResolvedValue(mockUsers) };
+                    return {
+                        findAll: jest.fn().mockResolvedValue(mockUsers),
+                        getProfileByRequester: jest.fn().mockResolvedValue(mockUsers[0]),
+                    };
                 }
 
                 if (token === getRepositoryToken(User)) {
@@ -48,6 +51,19 @@ describe('UsersController', () => {
         it('should return an array of users', async () => {
             const result = await usersController.findAll();
             expect(result).toEqual(mockUsers);
+        })
+    })
+
+    describe('findOne', () => {
+        it('should return one user by ID', async () => {
+            const userId = 1;
+            const expectedUser = mockUsers[0];
+
+            const mockRequest = { user: { id: 1, role: 'admin' } }
+
+            const result = await usersController.findOne(userId, mockRequest);
+
+            expect(result).toEqual(expectedUser);
         })
     })
 
